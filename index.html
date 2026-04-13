@@ -30,9 +30,26 @@ canvas{display:block;flex:1;touch-action:none;}
 .presets{display:flex;gap:4px;justify-content:center;margin-bottom:4px;flex-wrap:wrap;}
 .preset{background:none;border:1px solid rgba(168,212,230,0.12);color:var(--text-dim);padding:3px 7px;border-radius:8px;font-size:8px;cursor:pointer;letter-spacing:0.5px;text-transform:uppercase;}
 .preset.active{color:var(--ice);border-color:rgba(168,212,230,0.3);}
+.onboard-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:100;display:flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:20px;}
+.onboard-overlay.hidden{display:none;}
+.onboard{background:#0d1020;border:1px solid rgba(168,212,230,0.1);border-radius:16px;padding:24px 20px;max-width:380px;width:100%;max-height:85vh;overflow-y:auto;}
+.onboard h2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#a8d4e6;letter-spacing:2px;text-align:center;margin-bottom:12px;}
+.onboard p{font-size:12px;line-height:1.6;color:#e6ddd0;opacity:0.85;margin-bottom:10px;}
+.onboard .hl{color:#a8d4e6;}
+.onboard .dismiss{display:block;margin:14px auto 0;background:rgba(168,212,230,0.08);border:1px solid rgba(168,212,230,0.25);color:#a8d4e6;padding:10px 32px;border-radius:12px;font-family:'Cormorant Garamond',serif;font-size:14px;cursor:pointer;letter-spacing:1px;}
 </style>
 </head>
 <body>
+<div class="onboard-overlay" id="onboard">
+  <div class="onboard">
+    <h2>Snowflake Grower</h2>
+    <p>Watch a unique ice crystal grow from a single seed. <span class="hl">No two snowflakes are alike</span> — each one is generated with randomized branching, just like real crystallization.</p>
+    <p><span class="hl">Branches</span> controls the number of arms (real snowflakes have 6). <span class="hl">Complexity</span> controls how many sub-branches grow — like how temperature and humidity affect real crystal formation.</p>
+    <p>Try the presets: <span class="hl">Dendrite</span> (classic snowflake), <span class="hl">Plate</span> (simple hexagon), <span class="hl">Fern</span> (heavily branched), <span class="hl">Star</span> (medium detail).</p>
+    <p>Tap <span class="hl">New Crystal</span> to grow another — each one will be different. Tap <span class="hl">Immerse</span> to watch full-screen.</p>
+    <button class="dismiss" id="dismissOnboard">Grow a Crystal</button>
+  </div>
+</div>
 <div class="top" id="topBar"><span class="title">Snowflake</span></div>
 <canvas id="c"></canvas>
 <div class="bottom" id="bottomBar">
@@ -193,6 +210,11 @@ canvas.addEventListener('touchstart',e=>{if(immersed){e.preventDefault();immerse
 canvas.addEventListener('click',()=>{if(immersed){immersed=false;topBar.classList.remove('hidden');bottomBar.classList.remove('hidden');}});
 
 renderPresets();
+
+const onboard=document.getElementById('onboard');
+if(localStorage.getItem('snowflake-onboarded')) onboard.classList.add('hidden');
+document.getElementById('dismissOnboard').addEventListener('click',()=>{onboard.classList.add('hidden');localStorage.setItem('snowflake-onboarded','1');});
+
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
